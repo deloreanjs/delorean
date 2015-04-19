@@ -160,6 +160,7 @@
           // you can change it using `DeLorean.Flux.define('Promise', AnotherPromise)`
           return new DeLorean.Promise(function (resolve, reject) {
             store.listener.once('change', resolve);
+            store.listener.once('rollback', reject);
           });
         }
 
