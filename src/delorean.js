@@ -86,7 +86,9 @@
       /* If any of them fires `rollback` event, all of the stores
          will be emitted to be rolled back with `__rollback` event. */
       for (var j in stores) {
-        stores[j].listener.on('rollback', __listener);
+        if (stores.hasOwnProperty(j)) {
+          stores[j].listener.on('rollback', __listener);
+        }
       }
     }
 
@@ -277,7 +279,7 @@
         definition = scheme[key];
 
         // This will allow you to directly set falsy values before falling back to the definition default
-        this.state[key] = (typeof value !== 'undefined') ? value : definition.default;
+        this.state[key] = (typeof value !== 'undefined') ? value : definition['default'];
 
         if (typeof definition.calculate === 'function') {
           this.state[__generateOriginalName(key)] = value;
@@ -303,12 +305,13 @@
         defaultValue = null;
         calculatedValue = null;
 
-        formattedScheme[keyName] = {default: null};
+        formattedScheme[keyName] = {};
+        formattedScheme[keyName]['default'] = null;
 
         /* {key: 'value'} will be {key: {default: 'value'}} */
         defaultValue = (definition && typeof definition === 'object') ?
-                        definition.default : definition;
-        formattedScheme[keyName].default = defaultValue;
+                        definition['default'] : definition;
+        formattedScheme[keyName]['default'] = defaultValue;
 
         /* {key: function () {}} will be {key: {calculate: function () {}}} */
         if (definition && typeof definition.calculate === 'function') {
@@ -342,7 +345,7 @@
         /* Set the defaults first */
         for (keyName in scheme) {
           definition = scheme[keyName];
-          this.state[keyName] = __clone(definition.default);
+          this.state[keyName] = __clone(definition['default']);
         }
 
         /* Set the calculations */
@@ -360,8 +363,8 @@
               dependencyMap[dep].push(keyName);
             }
 
-            this.state[__generateOriginalName(keyName)] = definition.default;
-            this.state[keyName] = definition.calculate.call(this, definition.default);
+            this.state[__generateOriginalName(keyName)] = definition['default'];
+            this.state[keyName] = definition.calculate.call(this, definition['default']);
             changedProps.push(keyName);
           }
         }
@@ -389,7 +392,7 @@
           // Calculate this value
           definition = scheme[dep];
           this.state[dep] = definition.calculate.call(this,
-                            this.state[__generateOriginalName(dep)] || definition.default);
+                            this.state[__generateOriginalName(dep)] || definition['default']);
 
           // Make sure this does not get calculated again in this change batch
           didRun.push(dep);
