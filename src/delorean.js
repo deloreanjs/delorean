@@ -86,7 +86,7 @@
       /* If any of them fires `rollback` event, all of the stores
          will be emitted to be rolled back with `__rollback` event. */
       for (var j in stores) {
-        if (stores.hasOwnProperty(j)) {
+        if (__hasOwn(stores, j)) {
           stores[j].listener.on('rollback', __listener);
         }
       }

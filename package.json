@@ -33,7 +33,8 @@
     "karma-chrome-launcher": "^0.1.4",
     "karma-coverage": "^0.2.6",
     "karma-jasmine": "^0.1.5",
-    "karma-phantomjs-launcher": "^0.1.4"
+    "karma-phantomjs-launcher": "^0.1.4",
+    "karma-virtualbox-launcher": "0.0.2"
   },
   "dependencies": {
     "es6-promise": "^1.0.0"

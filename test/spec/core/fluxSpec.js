@@ -106,17 +106,18 @@ describe('Flux', function () {
     expect(spy).not.toHaveBeenCalled();
   });
 
-  var myStoreWithScheme = DeLorean.Flux.createStore({
+  // The storeConfig is declared without the 'default' values set in
+  // order to declare them with ['square bracket'] notation -
+  // which will enable this test to be run in IE8. (IE8 considers 'default'
+  // to be a reserved keyword)
+  var storeConfig = {
     actions: {},
     scheme: {
       greeting: 'hello',
-      place: {
-        default: 'world'
-      },
+      place: {},
       otherPlace: 'outerspace',
       greetPlace: {
         deps: ['greeting', 'place'],
-        default: 'hey',
         calculate: function (value) {
           return value.toUpperCase() + ' ' + this.state.greeting + ', ' + this.state.place;
         }
@@ -130,7 +131,6 @@ describe('Flux', function () {
       randomProp: 'random',
       anotherCalculated: {
         deps: ['randomProp'],
-        default: null,
         calculate: calculateSpy
       },
       dependentOnCalculated: {
@@ -139,13 +139,16 @@ describe('Flux', function () {
           return this.state.greetPlace;
         }
       },
-      objectDefault: {
-        default: {
-          name: 'Test default objects get cloned'
-        }
-      }
+      objectDefault: {}
     }
-  });
+  };
+
+  storeConfig.scheme.place['default'] = 'world';
+  storeConfig.scheme.greetPlace['default'] = 'hey';
+  storeConfig.scheme.anotherCalculated['default'] = null;
+  storeConfig.scheme.objectDefault['default'] = { name: 'Test default objects get cloned'};
+
+  var myStoreWithScheme = DeLorean.Flux.createStore(storeConfig);
 
   describe('scheme', function () {
     it('should cause default and calculated scheme properties to be created on instantiation', function () {
@@ -155,7 +158,7 @@ describe('Flux', function () {
     });
 
     it('should clone defaults that are objects, rather than applying them directly', function () {
-      expect(myStoreWithScheme.scheme.objectDefault.default).not.toBe(myStoreWithScheme.getState().objectDefault);
+      expect(myStoreWithScheme.scheme.objectDefault['default']).not.toBe(myStoreWithScheme.getState().objectDefault);
     });
 
     it('should re-calculate scheme properties with #calculate and deps defined', function () {
