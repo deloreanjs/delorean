@@ -11,6 +11,6 @@
   },
   "dependencies": {
     "director": "^1.2.3",
-    "react": "^0.11.1"
+    "react": "^16.13.1"
   }
 }
